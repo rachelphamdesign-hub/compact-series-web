@@ -5,8 +5,8 @@
 const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
-const TRANSITION_MS = 800; // lockout while a section transition plays
-const SCRUB_RATE = 7;      // higher = video catches up to the section faster
+const TRANSITION_MS = 1100; // lockout while a section transition plays
+const SCRUB_RATE = 5;       // higher = video catches up to the section faster
 
 let current = 0;
 let locked = false;
@@ -83,7 +83,7 @@ function goTo(index) {
   setTimeout(() => {
     from.classList.remove("is-active", "is-leaving");
     to.classList.add("is-active");
-  }, 220);
+  }, 320);
 
   current = index;
   setTimeout(() => { locked = false; }, TRANSITION_MS);

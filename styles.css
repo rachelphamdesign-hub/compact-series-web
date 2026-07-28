@@ -344,8 +344,8 @@ a.btn-glass-dark:active {
   opacity: 0;
   transform: translateY(36px);
   transition:
-    opacity 0.5s var(--ease-out),
-    transform 0.5s var(--ease-out);
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
   transition-delay: var(--d, 0s);
 }
 
@@ -357,14 +357,14 @@ a.btn-glass-dark:active {
 .panel.is-leaving .reveal {
   opacity: 0;
   transform: translateY(-24px);
-  transition-duration: 0.25s;
+  transition-duration: 0.35s;
   transition-delay: 0s;
 }
 
-.panel .reveal:nth-of-type(1) { --d: 0.08s; }
-.panel .reveal:nth-of-type(2) { --d: 0.14s; }
-.panel .reveal:nth-of-type(3) { --d: 0.2s; }
-.panel .reveal:nth-of-type(4) { --d: 0.26s; }
+.panel .reveal:nth-of-type(1) { --d: 0.15s; }
+.panel .reveal:nth-of-type(2) { --d: 0.25s; }
+.panel .reveal:nth-of-type(3) { --d: 0.35s; }
+.panel .reveal:nth-of-type(4) { --d: 0.45s; }
 
 /* ============ SECTION 1 — HERO ============ */
 
