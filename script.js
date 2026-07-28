@@ -89,19 +89,47 @@ function goTo(index) {
   setTimeout(() => { locked = false; }, TRANSITION_MS);
 }
 
-/* ---------- input: wheel ---------- */
+/* ---------- input: wheel ----------
+   Trackpads send many small pixel deltas (macOS feels smooth with accumulation).
+   Windows mice often use deltaMode=1 (lines) with tiny deltaY values — without
+   normalizing, a notch never reaches the threshold and scroll feels broken. */
 
+const WHEEL_THRESHOLD = 40;
 let wheelAccum = 0;
+let wheelResetTimer = null;
+
+function normalizeWheelDelta(e) {
+  let dy = e.deltaY;
+  if (e.deltaMode === 1) dy *= 40;              // lines → approx px
+  else if (e.deltaMode === 2) dy *= window.innerHeight; // pages
+  return dy;
+}
+
 window.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
     if (locked) return;
-    wheelAccum += e.deltaY;
-    if (wheelAccum > 40) {
+
+    const dy = normalizeWheelDelta(e);
+    if (dy === 0) return;
+
+    // Discrete mouse notch (line mode, or one large jump): one section per tick
+    if (e.deltaMode === 1 || Math.abs(dy) >= 80) {
+      wheelAccum = 0;
+      goTo(current + (dy > 0 ? 1 : -1));
+      return;
+    }
+
+    // Continuous trackpad gesture: accumulate small pixel deltas
+    wheelAccum += dy;
+    clearTimeout(wheelResetTimer);
+    wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, 180);
+
+    if (wheelAccum > WHEEL_THRESHOLD) {
       wheelAccum = 0;
       goTo(current + 1);
-    } else if (wheelAccum < -40) {
+    } else if (wheelAccum < -WHEEL_THRESHOLD) {
       wheelAccum = 0;
       goTo(current - 1);
     }
