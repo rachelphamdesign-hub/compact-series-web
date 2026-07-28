@@ -5,8 +5,8 @@
 const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
-const TRANSITION_MS = 1400; // lockout while a section transition plays
-const SCRUB_RATE = 3.2;     // higher = video catches up to the section faster
+const TRANSITION_MS = 800; // lockout while a section transition plays
+const SCRUB_RATE = 7;      // higher = video catches up to the section faster
 
 let current = 0;
 let locked = false;
@@ -83,7 +83,7 @@ function goTo(index) {
   setTimeout(() => {
     from.classList.remove("is-active", "is-leaving");
     to.classList.add("is-active");
-  }, 420);
+  }, 220);
 
   current = index;
   setTimeout(() => { locked = false; }, TRANSITION_MS);
@@ -98,10 +98,10 @@ window.addEventListener(
     e.preventDefault();
     if (locked) return;
     wheelAccum += e.deltaY;
-    if (wheelAccum > 60) {
+    if (wheelAccum > 40) {
       wheelAccum = 0;
       goTo(current + 1);
-    } else if (wheelAccum < -60) {
+    } else if (wheelAccum < -40) {
       wheelAccum = 0;
       goTo(current - 1);
     }
