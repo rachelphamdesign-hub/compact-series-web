@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / local
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel
+
+# Source footage (not needed for the live site)
+Firefly*.mp4
+*.mov
+
+# Local design / reference dumps (not used by the site)
+shot-*.png
+shot-*.jpg
+20260520_*.jpg
+ChatGPT*.png
+lids only.png
+Media*.jpg
+Media*.png
+/Compact_Series.pdf
+
+# Unused assets kept for design work only
+assets/figma/
+assets/gsap.min.js
+assets/scene-1.png
+assets/scene-2.png
+assets/scene-3.png

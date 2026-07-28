@@ -1,0 +1,29 @@
+# Keep Vercel uploads lean — ignore local source & reference files.
+# Site needs: index.html, styles.css, script.js, and used assets only.
+
+.DS_Store
+.vercel
+.idea/
+.vscode/
+
+Firefly*.mp4
+*.mov
+
+shot-*.png
+shot-*.jpg
+20260520_*.jpg
+ChatGPT*.png
+lids only.png
+Media*.jpg
+Media*.png
+Compact_Series.pdf
+
+assets/figma/
+assets/gsap.min.js
+assets/scene-1.png
+assets/scene-2.png
+assets/scene-3.png
+
+README.md
+.gitignore
+.vercelignore

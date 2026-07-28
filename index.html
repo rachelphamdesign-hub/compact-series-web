@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Compact Series — Waterloo Biofilter</title>
+  <meta name="description" content="The Compact Series advanced septic system by Waterloo Biofilter. Engineered from the ground up." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:," />
+</head>
+<body>
+
+  <!-- Background video + atmospheric layers -->
+  <video id="bg-video" data-src="assets/compact-series.mp4" poster="assets/hero-poster.jpg" muted playsinline preload="auto"></video>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <!-- Persistent header -->
+  <header class="site-header">
+    <a class="logo" href="#" aria-label="Waterloo Biofilter home">
+      <img src="assets/waterloo-logo.png" alt="Waterloo Biofilter" />
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a
+        class="btn btn-glass-white btn-nav"
+        href="https://waterloo-biofilter.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="nav-label">
+          <span class="nav-full">Talk with Expert</span>
+          <span class="nav-short">Expert</span>
+        </span>
+        <span class="nav-arrow" aria-hidden="true">
+          <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+            <path d="M2 12 12 2M12 2H4M12 2v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ============ SECTION 1 — HERO ============ -->
+  <section class="panel panel-hero is-active" data-index="0">
+    <div class="hero-stack">
+      <div class="hero-titles reveal">
+        <p class="hero-eyebrow">BIOFILTER</p>
+        <h1 class="hero-title">Compact Series</h1>
+      </div>
+      <div class="hero-ctas reveal">
+        <button class="btn btn-glass-dark btn-explore">
+          Explore the System
+          <span class="cta-arrow" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M2 12 12 2M12 2H4M12 2v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <p class="scroll-hint reveal">Scroll</p>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2 — TECHNOLOGY ============ -->
+  <section class="panel panel-tech" data-index="1">
+    <div class="tech-left">
+      <p class="label reveal">01 — Technology</p>
+      <h2 class="headline reveal">
+        <span>Smart Packaging.</span>
+        <span>Full Performance.</span>
+      </h2>
+    </div>
+
+    <div class="glass-panel feature-card reveal">
+      <div class="feature">
+        <button type="button" class="feature-head" aria-expanded="false">
+          <span class="feature-num">01</span>
+          <span class="feature-title">One tank instead of two</span>
+        </button>
+        <div class="feature-body">
+          <p>Our anaerobic digester and treatment unit are combined in a single tank, reducing the number of tanks and components on site.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <button type="button" class="feature-head" aria-expanded="false">
+          <span class="feature-num">02</span>
+          <span class="feature-title">Lower overall costs</span>
+        </button>
+        <div class="feature-body">
+          <p>Only one tank to supply, set and connect will further reduce equipment, labour and coordination costs.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <button type="button" class="feature-head" aria-expanded="false">
+          <span class="feature-num">03</span>
+          <span class="feature-title">Fast and simple installation</span>
+        </button>
+        <div class="feature-body">
+          <p>The system comes completely pre-assembled. Connections to the tank and disposal bed are all that’s needed.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <button type="button" class="feature-head" aria-expanded="false">
+          <span class="feature-num">04</span>
+          <span class="feature-title">No treatment compromise</span>
+        </button>
+        <div class="feature-body">
+          <p>A fully BNQ certified Waterloo Biofilter system in a smarter package with full performance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3 — EXPLODED VIEW ============ -->
+  <section class="panel panel-arch" data-index="2">
+    <div class="gallery-anchor">
+      <div class="glass-panel gallery-card reveal">
+        <img src="assets/install-1.png" alt="Compact Series single tank ready for installation" />
+        <img src="assets/install-2.png" alt="Finished installation, only the lids visible in the lawn" />
+      </div>
+    </div>
+
+    <div class="hotspot-layer" aria-label="System hotspots">
+      <div class="hotspot-group hotspot-group-nozzle" style="--x: 56%; --y: 47%;">
+        <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-nozzle">
+          <span class="hotspot-dot" aria-hidden="true"></span>
+          <span class="visually-hidden">Distribution Nozzle</span>
+        </button>
+        <article id="callout-nozzle" class="glass-panel callout callout-nozzle" role="tooltip">
+          <p class="callout-title">Distribution Nozzle</p>
+          <img src="assets/nozzle.png" alt="Distribution nozzle inside the biofilter basket" />
+        </article>
+      </div>
+
+      <div class="hotspot-group hotspot-group-pump" style="--x: 58%; --y: 30%;">
+        <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-pump">
+          <span class="hotspot-dot" aria-hidden="true"></span>
+          <span class="visually-hidden">Septic System Pump Chamber</span>
+        </button>
+        <article id="callout-pump" class="glass-panel callout callout-pump" role="tooltip">
+          <p class="callout-title">Septic System<br />Pump Chamber</p>
+          <img src="assets/pump-chamber.png" alt="Pump chamber internals" />
+        </article>
+      </div>
+    </div>
+
+    <div class="arch-cta reveal">
+      <a
+        class="btn btn-glass-dark"
+        href="assets/Compact_Series.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Download the Brochure</a>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
