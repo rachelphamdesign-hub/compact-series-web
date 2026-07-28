@@ -759,13 +759,15 @@ a.btn-glass-dark:active {
   .logo {
     flex: none;
     min-width: 0;
+    max-width: 42%;
+    overflow: visible;
   }
 
   .logo img {
-    height: 22px;
-    width: 28px;
-    max-width: 28px;
-    object-fit: cover;
+    height: 20px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
     object-position: left center;
   }
 
@@ -813,6 +815,13 @@ a.btn-glass-dark:active {
 
   .gallery-anchor { display: none; }
 
+  .arch-cta {
+    left: 50%;
+    right: auto;
+    bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+  }
+
   .hotspot-group-nozzle { --x: 55% !important; --y: 46% !important; }
   .hotspot-group-pump { --x: 58% !important; --y: 32% !important; }
 
@@ -836,6 +845,13 @@ a.btn-glass-dark:active {
 
 @media (max-width: 640px) {
   :root { --edge: 14px; }
+
+  .logo img {
+    height: 18px;
+  }
+
+  .nav-full { display: none; }
+  .nav-short { display: inline; }
 
   .cta-arrow { width: 26px; height: 26px; }
 
