@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=gallery-bl" />
   <link rel="icon" href="data:," />
 </head>
 <body>
@@ -19,16 +19,20 @@
 
   <!-- Persistent header -->
   <header class="site-header">
-    <a class="logo" href="#" aria-label="Waterloo Biofilter home">
+    <a
+      class="logo"
+      href="https://waterloo-biofilter.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Waterloo Biofilter home"
+    >
       <img src="assets/waterloo-logo.png" alt="Waterloo Biofilter" />
     </a>
 
     <nav class="site-nav" aria-label="Primary">
       <a
         class="btn btn-glass-white btn-nav"
-        href="https://waterloo-biofilter.com/"
-        target="_blank"
-        rel="noopener noreferrer"
+        href="mailto:info@waterloo-biofilter.com"
       >
         <span class="nav-label">
           <span class="nav-full">Talk with Expert</span>
@@ -118,31 +122,52 @@
   <section class="panel panel-arch" data-index="2">
     <div class="gallery-anchor">
       <div class="glass-panel gallery-card reveal">
-        <img src="assets/install-1.png" alt="Compact Series single tank ready for installation" />
-        <img src="assets/install-2.png" alt="Finished installation, only the lids visible in the lawn" />
+        <img src="assets/gallery-tank.jpg" alt="Compact Series concrete tank with green access lids" />
       </div>
     </div>
 
     <div class="hotspot-layer" aria-label="System hotspots">
+      <div class="hotspot-group hotspot-group-digester" style="--x: 38%; --y: 40%;">
+        <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-digester">
+          <span class="hotspot-dot" aria-hidden="true"></span>
+          <span class="visually-hidden">Anaerobic Digester</span>
+        </button>
+        <article id="callout-digester" class="glass-panel callout callout-digester" role="tooltip">
+          <p class="callout-title">Anaerobic Digester</p>
+          <img src="assets/anaerobic-digester.jpg" alt="Anaerobic digester chamber with corrugated piping" />
+        </article>
+      </div>
+
       <div class="hotspot-group hotspot-group-nozzle" style="--x: 56%; --y: 47%;">
         <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-nozzle">
           <span class="hotspot-dot" aria-hidden="true"></span>
-          <span class="visually-hidden">Distribution Nozzle</span>
+          <span class="visually-hidden">Spray Nozzle and Safety Screen</span>
         </button>
         <article id="callout-nozzle" class="glass-panel callout callout-nozzle" role="tooltip">
-          <p class="callout-title">Distribution Nozzle</p>
-          <img src="assets/nozzle.png" alt="Distribution nozzle inside the biofilter basket" />
+          <p class="callout-title">Spray Nozzle and<br />Safety Screen</p>
+          <img src="assets/spray-nozzle.jpg" alt="Spray nozzle and yellow safety screen inside the riser" />
         </article>
       </div>
 
       <div class="hotspot-group hotspot-group-pump" style="--x: 58%; --y: 30%;">
         <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-pump">
           <span class="hotspot-dot" aria-hidden="true"></span>
-          <span class="visually-hidden">Septic System Pump Chamber</span>
+          <span class="visually-hidden">Effluent Pump</span>
         </button>
         <article id="callout-pump" class="glass-panel callout callout-pump" role="tooltip">
-          <p class="callout-title">Septic System<br />Pump Chamber</p>
-          <img src="assets/pump-chamber.png" alt="Pump chamber internals" />
+          <p class="callout-title">Effluent Pump</p>
+          <img src="assets/pump-chamber.png" alt="Effluent pump chamber internals" />
+        </article>
+      </div>
+
+      <div class="hotspot-group hotspot-group-internal-pump" style="--x: 53%; --y: 26%;">
+        <button type="button" class="hotspot" aria-expanded="false" aria-controls="callout-internal-pump">
+          <span class="hotspot-dot" aria-hidden="true"></span>
+          <span class="visually-hidden">Internal Pump Chamber</span>
+        </button>
+        <article id="callout-internal-pump" class="glass-panel callout callout-internal-pump" role="tooltip">
+          <p class="callout-title">Internal Pump<br />Chamber</p>
+          <img src="assets/internal-pump-chamber-2.jpg" alt="Internal pump chamber with pump, cables, and safety netting" />
         </article>
       </div>
     </div>

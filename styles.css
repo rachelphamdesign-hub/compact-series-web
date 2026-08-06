@@ -552,16 +552,20 @@ a.btn-glass-dark:active {
 .gallery-anchor {
   position: absolute;
   left: var(--edge);
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: var(--edge);
+  top: unset;
+  right: auto;
+  z-index: 5;
+  margin: 0;
+  transform: none;
 }
 
 .gallery-card {
-  width: 200px;
+  width: clamp(280px, 28vw, 360px);
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
 }
 
 .gallery-card img {
@@ -572,10 +576,6 @@ a.btn-glass-dark:active {
   border-radius: 14px;
   display: block;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-.gallery-card img:first-child {
-  object-position: center 40%;
 }
 
 .visually-hidden {
@@ -712,7 +712,9 @@ a.btn-glass-dark:active {
 }
 
 .callout-nozzle,
-.callout-pump {
+.callout-pump,
+.callout-digester,
+.callout-internal-pump {
   width: 260px;
 }
 
@@ -822,8 +824,10 @@ a.btn-glass-dark:active {
     transform: translateX(-50%);
   }
 
+  .hotspot-group-digester { --x: 36% !important; --y: 38% !important; }
   .hotspot-group-nozzle { --x: 55% !important; --y: 46% !important; }
   .hotspot-group-pump { --x: 58% !important; --y: 32% !important; }
+  .hotspot-group-internal-pump { --x: 52% !important; --y: 25% !important; }
 
   .callout {
     width: 190px;
@@ -834,7 +838,9 @@ a.btn-glass-dark:active {
   .callout-title { font-size: 15px; }
   .callout img { border-radius: 14px; }
   .callout-nozzle,
-  .callout-pump { width: 190px; }
+  .callout-pump,
+  .callout-digester,
+  .callout-internal-pump { width: 190px; }
 
   .btn { padding: 12px 18px; font-size: 11px; }
 
@@ -864,7 +870,9 @@ a.btn-glass-dark:active {
   .callout-title { font-size: 13px; }
   .callout img { border-radius: 12px; aspect-ratio: 4 / 3; }
   .callout-nozzle,
-  .callout-pump { width: 168px; }
+  .callout-pump,
+  .callout-digester,
+  .callout-internal-pump { width: 168px; }
 }
 
 /* Prefer taller phone frames — push titles lower, product owns center */
