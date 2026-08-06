@@ -926,6 +926,26 @@ a.btn-glass-dark:active {
     transform: translate(0, -50%);
   }
 
+  /* Clear the top-left gallery card on phones */
+  .hotspot-group-pump:hover:not(.is-hover-locked) .callout,
+  .hotspot-group-pump.is-open .callout {
+    top: calc(50% + 110px);
+    transform: translate(0, -50%);
+  }
+
+  /* Internal Pump Chamber — open below the dot so it stays on-screen */
+  .hotspot-group-internal-pump .callout {
+    left: 50%;
+    right: auto;
+    top: calc(100% + 10px);
+    transform: translate(-50%, 8px);
+  }
+
+  .hotspot-group-internal-pump:hover:not(.is-hover-locked) .callout,
+  .hotspot-group-internal-pump.is-open .callout {
+    transform: translate(-50%, 0);
+  }
+
   .btn { padding: 12px 18px; font-size: 11px; }
 
   .btn-explore {
