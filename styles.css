@@ -722,6 +722,7 @@ a.btn-glass-dark:active {
   position: absolute;
   right: var(--edge);
   bottom: var(--edge);
+  z-index: 6;
 }
 
 /* ---------- responsive — mobile 9:16 composition ---------- */
