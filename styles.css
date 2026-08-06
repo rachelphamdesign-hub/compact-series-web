@@ -140,7 +140,6 @@ a.btn-glass-dark:active {
 }
 
 .callout.glass-panel:hover {
-  transform: translate(0, -50%);
   border-color: rgba(255, 255, 255, 0.28);
 }
 
@@ -440,29 +439,6 @@ a.btn-glass-dark:active {
   50%      { transform: translateY(6px); opacity: 0.95; }
 }
 
-/* Mobile-only full-system preview (enabled in the phone media query) */
-.hero-fullview {
-  display: none;
-}
-
-.hero-fullview-card {
-  width: clamp(118px, 32vw, 148px);
-  padding: 3px;
-  border-radius: 10px;
-  border-width: 1px;
-}
-
-.hero-fullview-card img {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 7px;
-  display: block;
-  background: rgba(197, 203, 198, 0.35);
-  box-shadow: none;
-}
-
 /* ============ SECTION 2 — TECHNOLOGY ============ */
 
 .panel-tech {
@@ -747,9 +723,8 @@ a.btn-glass-dark:active {
     visibility 0.28s;
 }
 
-/* Keep open while hovering the group (dot or tooltip) */
-.hotspot-group:hover .callout,
-.hotspot-group:focus-within .callout,
+/* Hover = preview; .is-open = pinned by click */
+.hotspot-group:hover:not(.is-hover-locked) .callout,
 .hotspot-group.is-open .callout {
   opacity: 1;
   visibility: visible;
@@ -796,14 +771,6 @@ a.btn-glass-dark:active {
 /* ---------- responsive — mobile 9:16 composition ---------- */
 
 @media (max-width: 900px) {
-  .hero-fullview {
-    display: block;
-    position: absolute;
-    left: var(--edge);
-    top: calc(56px + env(safe-area-inset-top, 0px));
-    z-index: 5;
-  }
-
   .panel-hero {
     /* leave the mid-frame open for the product */
     justify-content: flex-end;
@@ -901,7 +868,26 @@ a.btn-glass-dark:active {
   }
   .feature.is-open .feature-body > p { padding-bottom: 12px; }
 
-  .gallery-anchor { display: none; }
+  .gallery-anchor {
+    display: block;
+    left: var(--edge);
+    top: calc(56px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+  }
+
+  .gallery-card {
+    width: clamp(118px, 32vw, 148px);
+    padding: 3px;
+    border-radius: 10px;
+    border-width: 1px;
+  }
+
+  .gallery-card img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 7px;
+    box-shadow: none;
+  }
 
   .arch-cta {
     left: 0;
@@ -933,14 +919,10 @@ a.btn-glass-dark:active {
     transform: translate(-8px, -50%);
   }
 
-  .hotspot-group-pump:hover .callout,
-  .hotspot-group-pump:focus-within .callout,
+  .hotspot-group-pump:hover:not(.is-hover-locked) .callout,
   .hotspot-group-pump.is-open .callout,
-  .hotspot-group-pump .callout.glass-panel:hover,
-  .hotspot-group-nozzle:hover .callout,
-  .hotspot-group-nozzle:focus-within .callout,
-  .hotspot-group-nozzle.is-open .callout,
-  .hotspot-group-nozzle .callout.glass-panel:hover {
+  .hotspot-group-nozzle:hover:not(.is-hover-locked) .callout,
+  .hotspot-group-nozzle.is-open .callout {
     transform: translate(0, -50%);
   }
 

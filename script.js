@@ -292,14 +292,23 @@ hotspotGroups.forEach((group) => {
 
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const open = !group.classList.contains("is-open");
-    closeAllHotspots(open ? group : null);
-    group.classList.toggle("is-open", open);
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    const willOpen = !group.classList.contains("is-open");
+
+    // Close any other pinned callout; toggle this one
+    closeAllHotspots(willOpen ? group : null);
+    hotspotGroups.forEach((g) => g.classList.remove("is-hover-locked"));
+    group.classList.toggle("is-open", willOpen);
+    btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+
+    // After unpinning, suppress hover until the pointer leaves the dot
+    if (!willOpen) group.classList.add("is-hover-locked");
+  });
+
+  group.addEventListener("mouseleave", () => {
+    group.classList.remove("is-hover-locked");
   });
 });
 
-document.addEventListener("click", () => closeAllHotspots());
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeAllHotspots();
 });
