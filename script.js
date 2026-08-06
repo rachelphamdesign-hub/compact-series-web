@@ -37,6 +37,7 @@ video.addEventListener("loadedmetadata", () => {
   videoDuration = video.duration;
   video.pause();
   video.currentTime = 0.001;
+  syncHotspotLayerToVideo();
 });
 
 video.addEventListener("canplay", () => {
@@ -226,6 +227,56 @@ features.forEach((feature) => {
 /* ---------- architecture hotspots (tap / click toggle) ---------- */
 
 const hotspotGroups = Array.from(document.querySelectorAll(".hotspot-group"));
+const hotspotLayer = document.querySelector(".hotspot-layer");
+
+function parsePosKeyword(part, container, object) {
+  const value = part.trim().toLowerCase();
+  if (value === "center" || value === "centre") return 0.5 * (container - object);
+  if (value === "left" || value === "top") return 0;
+  if (value === "right" || value === "bottom") return container - object;
+  if (value.endsWith("%")) {
+    const pct = parseFloat(value) / 100;
+    return Number.isFinite(pct) ? pct * (container - object) : 0.5 * (container - object);
+  }
+  if (value.endsWith("px")) {
+    const px = parseFloat(value);
+    return Number.isFinite(px) ? px : 0.5 * (container - object);
+  }
+  return 0.5 * (container - object);
+}
+
+/** Map hotspot % coords onto the same video frame the user sees (object-fit: cover). */
+function syncHotspotLayerToVideo() {
+  if (!hotspotLayer || !video) return;
+
+  const ew = video.clientWidth;
+  const eh = video.clientHeight;
+  const iw = video.videoWidth;
+  const ih = video.videoHeight;
+
+  if (!ew || !eh || !iw || !ih) {
+    hotspotLayer.style.inset = "0";
+    hotspotLayer.style.width = "";
+    hotspotLayer.style.height = "";
+    hotspotLayer.style.left = "";
+    hotspotLayer.style.top = "";
+    return;
+  }
+
+  const scale = Math.max(ew / iw, eh / ih);
+  const width = iw * scale;
+  const height = ih * scale;
+  const pos = getComputedStyle(video).objectPosition || "center center";
+  const parts = pos.split(/\s+/);
+  const left = parsePosKeyword(parts[0] || "center", ew, width);
+  const top = parsePosKeyword(parts[1] || parts[0] || "center", eh, height);
+
+  hotspotLayer.style.inset = "auto";
+  hotspotLayer.style.left = `${left}px`;
+  hotspotLayer.style.top = `${top}px`;
+  hotspotLayer.style.width = `${width}px`;
+  hotspotLayer.style.height = `${height}px`;
+}
 
 function closeAllHotspots(except = null) {
   hotspotGroups.forEach((group) => {
@@ -253,6 +304,13 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeAllHotspots();
 });
 
+window.addEventListener("resize", syncHotspotLayerToVideo);
+window.addEventListener("orientationchange", () => {
+  requestAnimationFrame(syncHotspotLayerToVideo);
+});
+window.addEventListener("load", syncHotspotLayerToVideo);
+syncHotspotLayerToVideo();
+
 /* ---------- initial reveal ---------- */
 
 // Re-trigger the hero reveal on load so the entrance animation plays.
@@ -262,4 +320,5 @@ window.addEventListener("load", () => {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => hero.classList.add("is-active"));
   });
+  syncHotspotLayerToVideo();
 });

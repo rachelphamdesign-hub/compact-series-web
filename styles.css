@@ -662,6 +662,7 @@ a.btn-glass-dark:active {
   inset: 0;
   z-index: 3;
   pointer-events: none;
+  /* left/top/width/height synced to the video object-fit box in script.js */
 }
 
 .hotspot-group {
@@ -911,11 +912,6 @@ a.btn-glass-dark:active {
     bottom: max(48px, calc(28px + env(safe-area-inset-bottom, 0px)));
   }
 
-  .hotspot-group-digester { --x: 36% !important; --y: 38% !important; }
-  .hotspot-group-nozzle { --x: 55% !important; --y: 46% !important; }
-  .hotspot-group-pump { --x: 58% !important; --y: 32% !important; }
-  .hotspot-group-internal-pump { --x: 52% !important; --y: 25% !important; }
-
   .callout {
     width: 190px;
     padding: 16px 14px 14px;
@@ -928,6 +924,25 @@ a.btn-glass-dark:active {
   .callout-pump,
   .callout-digester,
   .callout-internal-pump { width: 190px; }
+
+  /* Right-side hotspots — open callout to the left on phones */
+  .hotspot-group-pump .callout,
+  .hotspot-group-nozzle .callout {
+    left: auto;
+    right: calc(100% + 12px);
+    transform: translate(-8px, -50%);
+  }
+
+  .hotspot-group-pump:hover .callout,
+  .hotspot-group-pump:focus-within .callout,
+  .hotspot-group-pump.is-open .callout,
+  .hotspot-group-pump .callout.glass-panel:hover,
+  .hotspot-group-nozzle:hover .callout,
+  .hotspot-group-nozzle:focus-within .callout,
+  .hotspot-group-nozzle.is-open .callout,
+  .hotspot-group-nozzle .callout.glass-panel:hover {
+    transform: translate(0, -50%);
+  }
 
   .btn { padding: 12px 18px; font-size: 11px; }
 
