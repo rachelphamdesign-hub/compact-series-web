@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=gallery-bl" />
+  <link rel="stylesheet" href="styles.css?v=brochure-center2" />
   <link rel="icon" href="data:," />
 </head>
 <body>
@@ -49,6 +49,12 @@
 
   <!-- ============ SECTION 1 — HERO ============ -->
   <section class="panel panel-hero is-active" data-index="0">
+    <div class="hero-fullview">
+      <div class="glass-panel hero-fullview-card reveal">
+        <img src="assets/hero-poster.jpg" alt="Full Compact Series system view" />
+      </div>
+    </div>
+
     <div class="hero-stack">
       <div class="hero-titles reveal">
         <p class="hero-eyebrow">BIOFILTER</p>
@@ -78,41 +84,54 @@
       </h2>
     </div>
 
-    <div class="glass-panel feature-card reveal">
-      <div class="feature">
-        <button type="button" class="feature-head" aria-expanded="false">
-          <span class="feature-num">01</span>
-          <span class="feature-title">One tank instead of two</span>
-        </button>
-        <div class="feature-body">
-          <p>Our anaerobic digester and treatment unit are combined in a single tank, reducing the number of tanks and components on site.</p>
+    <div class="tech-features reveal">
+      <button
+        type="button"
+        class="tech-collapse"
+        aria-expanded="true"
+        aria-controls="feature-list"
+        aria-label="Minimize feature list"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M3 5.5 7 9.5 11 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div id="feature-list" class="glass-panel feature-card">
+        <div class="feature">
+          <button type="button" class="feature-head" aria-expanded="false">
+            <span class="feature-num">01</span>
+            <span class="feature-title">One tank instead of two</span>
+          </button>
+          <div class="feature-body">
+            <p>Our anaerobic digester and treatment unit are combined in a single tank, reducing the number of tanks and components on site.</p>
+          </div>
         </div>
-      </div>
-      <div class="feature">
-        <button type="button" class="feature-head" aria-expanded="false">
-          <span class="feature-num">02</span>
-          <span class="feature-title">Lower overall costs</span>
-        </button>
-        <div class="feature-body">
-          <p>Only one tank to supply, set and connect will further reduce equipment, labour and coordination costs.</p>
+        <div class="feature">
+          <button type="button" class="feature-head" aria-expanded="false">
+            <span class="feature-num">02</span>
+            <span class="feature-title">Lower overall costs</span>
+          </button>
+          <div class="feature-body">
+            <p>Only one tank to supply, set and connect will further reduce equipment, labour and coordination costs.</p>
+          </div>
         </div>
-      </div>
-      <div class="feature">
-        <button type="button" class="feature-head" aria-expanded="false">
-          <span class="feature-num">03</span>
-          <span class="feature-title">Fast and simple installation</span>
-        </button>
-        <div class="feature-body">
-          <p>The system comes completely pre-assembled. Connections to the tank and disposal bed are all that’s needed.</p>
+        <div class="feature">
+          <button type="button" class="feature-head" aria-expanded="false">
+            <span class="feature-num">03</span>
+            <span class="feature-title">Fast and simple installation</span>
+          </button>
+          <div class="feature-body">
+            <p>The system comes completely pre-assembled. Connections to the tank and disposal bed are all that’s needed.</p>
+          </div>
         </div>
-      </div>
-      <div class="feature">
-        <button type="button" class="feature-head" aria-expanded="false">
-          <span class="feature-num">04</span>
-          <span class="feature-title">No treatment compromise</span>
-        </button>
-        <div class="feature-body">
-          <p>A fully BNQ certified Waterloo Biofilter system in a smarter package with full performance.</p>
+        <div class="feature">
+          <button type="button" class="feature-head" aria-expanded="false">
+            <span class="feature-num">04</span>
+            <span class="feature-title">No treatment compromise</span>
+          </button>
+          <div class="feature-body">
+            <p>A fully BNQ certified Waterloo Biofilter system in a smarter package with full performance.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -183,6 +202,6 @@
     </div>
   </section>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=collapse-phone"></script>
 </body>
 </html>

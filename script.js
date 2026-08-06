@@ -170,7 +170,36 @@ document.querySelector(".btn-explore")?.addEventListener("click", () => goTo(1))
 
 /* ---------- technology feature accordion ---------- */
 
+const techPanel = document.querySelector(".panel-tech");
+const techCollapseBtn = document.querySelector(".tech-collapse");
 const features = Array.from(document.querySelectorAll(".feature"));
+
+techCollapseBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (!techPanel) return;
+  if (window.matchMedia("(max-width: 640px)").matches === false) return;
+
+  const collapsed = techPanel.classList.toggle("is-collapsed");
+  techCollapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  techCollapseBtn.setAttribute(
+    "aria-label",
+    collapsed ? "Expand feature list" : "Minimize feature list"
+  );
+
+  if (collapsed) {
+    features.forEach((feature) => {
+      feature.classList.remove("is-open");
+      feature.querySelector(".feature-head")?.setAttribute("aria-expanded", "false");
+    });
+  }
+});
+
+window.matchMedia("(max-width: 640px)").addEventListener("change", (e) => {
+  if (e.matches || !techPanel) return;
+  techPanel.classList.remove("is-collapsed");
+  techCollapseBtn?.setAttribute("aria-expanded", "true");
+  techCollapseBtn?.setAttribute("aria-label", "Minimize feature list");
+});
 
 features.forEach((feature) => {
   const head = feature.querySelector(".feature-head");
@@ -178,6 +207,8 @@ features.forEach((feature) => {
 
   head.addEventListener("click", (e) => {
     e.stopPropagation();
+    if (techPanel?.classList.contains("is-collapsed")) return;
+
     const willOpen = !feature.classList.contains("is-open");
 
     features.forEach((other) => {
