@@ -5,11 +5,25 @@
 const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
-const TRANSITION_MS = 1100; // lockout while a section transition plays
-const SCRUB_RATE = 5;       // higher = video catches up to the section faster
+const TRANSITION_MS = 1100;       // desktop lockout — keep as-is
+const TRANSITION_MS_PHONE = 420;  // phone: unlock quickly so swipes don't feel frozen
+const PANEL_SWAP_MS = 320;
+const PANEL_SWAP_MS_PHONE = 180;
+const SCRUB_RATE = 5;             // desktop scrub feel
+const SCRUB_RATE_PHONE = 11;      // phone: catch the section frame faster
+const TOUCH_THRESHOLD = 40;
+const TOUCH_THRESHOLD_PHONE = 28;
+
+const phoneMq = window.matchMedia("(max-width: 640px)");
+const isPhone = () => phoneMq.matches;
+const transitionMs = () => (isPhone() ? TRANSITION_MS_PHONE : TRANSITION_MS);
+const panelSwapMs = () => (isPhone() ? PANEL_SWAP_MS_PHONE : PANEL_SWAP_MS);
+const scrubRate = () => (isPhone() ? SCRUB_RATE_PHONE : SCRUB_RATE);
+const touchThreshold = () => (isPhone() ? TOUCH_THRESHOLD_PHONE : TOUCH_THRESHOLD);
 
 let current = 0;
 let locked = false;
+let pendingStep = 0; // phone only: remember swipe that arrived during lockout
 let videoDuration = 10;     // updated from metadata
 let targetTime = 0;
 let displayTime = 0;
@@ -61,7 +75,7 @@ function scrubLoop(now) {
   lastTick = now;
   const diff = targetTime - displayTime;
   if (Math.abs(diff) > 0.004 && video.readyState >= 2 && !video.seeking) {
-    displayTime += diff * (1 - Math.exp(-dt * SCRUB_RATE));
+    displayTime += diff * (1 - Math.exp(-dt * scrubRate()));
     video.currentTime = displayTime;
   }
   requestAnimationFrame(scrubLoop);
@@ -71,8 +85,16 @@ requestAnimationFrame(scrubLoop);
 /* ---------- section transitions ---------- */
 
 function goTo(index) {
-  if (locked || index < 0 || index >= panels.length || index === current) return;
+  if (index < 0 || index >= panels.length || index === current) return;
+
+  // On phone, queue the swipe instead of dropping it during lockout
+  if (locked) {
+    if (isPhone()) pendingStep = Math.sign(index - current) || pendingStep;
+    return;
+  }
+
   locked = true;
+  pendingStep = 0;
 
   const from = panels[current];
   const to = panels[index];
@@ -84,10 +106,17 @@ function goTo(index) {
   setTimeout(() => {
     from.classList.remove("is-active", "is-leaving");
     to.classList.add("is-active");
-  }, 320);
+  }, panelSwapMs());
 
   current = index;
-  setTimeout(() => { locked = false; }, TRANSITION_MS);
+  setTimeout(() => {
+    locked = false;
+    if (pendingStep) {
+      const next = current + pendingStep;
+      pendingStep = 0;
+      goTo(next);
+    }
+  }, transitionMs());
 }
 
 /* ---------- input: wheel ----------
@@ -141,16 +170,23 @@ window.addEventListener(
 /* ---------- input: touch ---------- */
 
 let touchStartY = null;
+let touchStartX = null;
+
 window.addEventListener("touchstart", (e) => {
   touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
 }, { passive: true });
 
 window.addEventListener("touchend", (e) => {
   if (touchStartY === null) return;
-  const delta = touchStartY - e.changedTouches[0].clientY;
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  const dx = touchStartX - e.changedTouches[0].clientX;
   touchStartY = null;
-  if (Math.abs(delta) < 40) return;
-  goTo(current + (delta > 0 ? 1 : -1));
+  touchStartX = null;
+
+  // Ignore mostly-horizontal gestures (e.g. slider-like taps)
+  if (Math.abs(dy) < touchThreshold() || Math.abs(dy) < Math.abs(dx) * 1.15) return;
+  goTo(current + (dy > 0 ? 1 : -1));
 });
 
 /* ---------- input: keyboard ---------- */
