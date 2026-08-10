@@ -5,12 +5,14 @@
 const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
-const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
-const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
+const TRANSITION_MS = 1100; // Mac trackpad lockout
+const TRANSITION_MS_WIN = 320; // Windows: short lock so back/forth stays responsive
 const TRANSITION_MS_PHONE = 520; // phone section lock
 const PANEL_SWAP_MS = 320;
+const PANEL_SWAP_MS_WIN = 180;
 const PANEL_SWAP_MS_PHONE = 180;
 const SCRUB_RATE = 5;
+const SCRUB_RATE_WIN = 9; // Windows: video keeps up when reversing quickly
 const SCRUB_RATE_PHONE = 8;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
@@ -22,18 +24,34 @@ const isIOS =
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const phoneMq = window.matchMedia("(max-width: 640px)");
 const isPhone = () => phoneMq.matches;
-const defaultLockMs = () => (isPhone() ? TRANSITION_MS_PHONE : TRANSITION_MS);
-const panelSwapMs = () => (isPhone() ? PANEL_SWAP_MS_PHONE : PANEL_SWAP_MS);
-const scrubRate = () => (isPhone() ? SCRUB_RATE_PHONE : SCRUB_RATE);
+const defaultLockMs = () => {
+  if (isPhone()) return TRANSITION_MS_PHONE;
+  if (isWindows) return TRANSITION_MS_WIN;
+  return TRANSITION_MS;
+};
+const panelSwapMs = () => {
+  if (isPhone()) return PANEL_SWAP_MS_PHONE;
+  if (isWindows) return PANEL_SWAP_MS_WIN;
+  return PANEL_SWAP_MS;
+};
+const scrubRate = () => {
+  if (isPhone()) return SCRUB_RATE_PHONE;
+  if (isWindows) return SCRUB_RATE_WIN;
+  return SCRUB_RATE;
+};
 const touchThreshold = () => (isPhone() ? TOUCH_THRESHOLD_PHONE : TOUCH_THRESHOLD);
+const queueDuringLock = () => isPhone() || isWindows;
 
 let current = 0;
 let locked = false;
-let pendingStep = 0; // phone: keep one queued swipe so it never feels dead
+let pendingStep = 0; // phone/Windows: keep one queued swipe so reverse isn't dropped
+let pendingLockMs = null;
 let videoDuration = 10;     // updated from metadata
 let targetTime = 0;
 let displayTime = 0;
 let lastSeekAt = 0;
+let swapTimer = null;
+let lockTimer = null;
 
 /* ---------- video loading ----------
    Non-iOS: fetch into a blob so scrubbing never hits the network.
@@ -135,9 +153,12 @@ requestAnimationFrame(scrubLoop);
 function goTo(index, options = {}) {
   if (index < 0 || index >= panels.length || index === current) return;
 
-  // Phone: queue one swipe during lock so input never feels frozen
+  // Phone + Windows: queue one swipe during lock so back/forth isn't dropped
   if (locked) {
-    if (isPhone()) pendingStep = Math.sign(index - current) || pendingStep;
+    if (queueDuringLock()) {
+      pendingStep = Math.sign(index - current) || pendingStep;
+      if (options.lockMs != null) pendingLockMs = options.lockMs;
+    }
     return;
   }
 
@@ -146,24 +167,30 @@ function goTo(index, options = {}) {
 
   const from = panels[current];
   const to = panels[index];
-  const lockMs = options.lockMs ?? defaultLockMs();
+  const lockMs = options.lockMs ?? pendingLockMs ?? defaultLockMs();
+  pendingLockMs = null;
 
   from.classList.add("is-leaving");
   targetTime = sectionTime(index);
 
+  clearTimeout(swapTimer);
+  clearTimeout(lockTimer);
+
   // let the outgoing content fade before swapping panels
-  setTimeout(() => {
+  swapTimer = setTimeout(() => {
     from.classList.remove("is-active", "is-leaving");
     to.classList.add("is-active");
   }, panelSwapMs());
 
   current = index;
-  setTimeout(() => {
+  lockTimer = setTimeout(() => {
     locked = false;
     if (pendingStep) {
       const next = current + pendingStep;
+      const nextOpts = pendingLockMs != null ? { lockMs: pendingLockMs } : {};
       pendingStep = 0;
-      goTo(next);
+      pendingLockMs = null;
+      goTo(next, nextOpts);
     }
   }, lockMs);
 }
@@ -188,18 +215,26 @@ window.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
-    if (locked) return;
 
     const dy = normalizeWheelDelta(e);
     if (dy === 0) return;
+
+    // While locked, still record intent on Windows so reverse isn't ignored
+    if (locked) {
+      if (queueDuringLock()) {
+        goTo(current + (dy > 0 ? 1 : -1), {
+          lockMs: isWindows ? TRANSITION_MS_WIN : undefined,
+        });
+      }
+      return;
+    }
 
     // Discrete mouse notch (line mode, or one large jump): one section per tick
     const discreteMouse = e.deltaMode === 1 || e.deltaMode === 2 || Math.abs(dy) >= 80;
     if (discreteMouse) {
       wheelAccum = 0;
       goTo(current + (dy > 0 ? 1 : -1), {
-        // Faster unlock only for Windows mouse notches — Mac trackpad / phone unchanged
-        lockMs: isWindows ? TRANSITION_MS_WIN_MOUSE : TRANSITION_MS,
+        lockMs: isWindows ? TRANSITION_MS_WIN : TRANSITION_MS,
       });
       return;
     }
@@ -207,14 +242,18 @@ window.addEventListener(
     // Continuous trackpad gesture: accumulate small pixel deltas
     wheelAccum += dy;
     clearTimeout(wheelResetTimer);
-    wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, 180);
+    wheelResetTimer = setTimeout(() => { wheelAccum = 0; }, isWindows ? 120 : 180);
 
     if (wheelAccum > WHEEL_THRESHOLD) {
       wheelAccum = 0;
-      goTo(current + 1);
+      goTo(current + 1, {
+        lockMs: isWindows ? TRANSITION_MS_WIN : undefined,
+      });
     } else if (wheelAccum < -WHEEL_THRESHOLD) {
       wheelAccum = 0;
-      goTo(current - 1);
+      goTo(current - 1, {
+        lockMs: isWindows ? TRANSITION_MS_WIN : undefined,
+      });
     }
   },
   { passive: false }
