@@ -6,7 +6,10 @@ const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // lockout while a section transition plays
+const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only — snappier
 const SCRUB_RATE = 5;       // higher = video catches up to the section faster
+
+const isWindows = /Windows/i.test(navigator.userAgent);
 
 let current = 0;
 let locked = false;
@@ -70,12 +73,13 @@ requestAnimationFrame(scrubLoop);
 
 /* ---------- section transitions ---------- */
 
-function goTo(index) {
+function goTo(index, options = {}) {
   if (locked || index < 0 || index >= panels.length || index === current) return;
   locked = true;
 
   const from = panels[current];
   const to = panels[index];
+  const lockMs = options.lockMs ?? TRANSITION_MS;
 
   from.classList.add("is-leaving");
   targetTime = sectionTime(index);
@@ -87,7 +91,7 @@ function goTo(index) {
   }, 320);
 
   current = index;
-  setTimeout(() => { locked = false; }, TRANSITION_MS);
+  setTimeout(() => { locked = false; }, lockMs);
 }
 
 /* ---------- input: wheel ----------
@@ -116,9 +120,13 @@ window.addEventListener(
     if (dy === 0) return;
 
     // Discrete mouse notch (line mode, or one large jump): one section per tick
-    if (e.deltaMode === 1 || Math.abs(dy) >= 80) {
+    const discreteMouse = e.deltaMode === 1 || e.deltaMode === 2 || Math.abs(dy) >= 80;
+    if (discreteMouse) {
       wheelAccum = 0;
-      goTo(current + (dy > 0 ? 1 : -1));
+      goTo(current + (dy > 0 ? 1 : -1), {
+        // Faster unlock only for Windows mouse notches — Mac trackpad / phone unchanged
+        lockMs: isWindows ? TRANSITION_MS_WIN_MOUSE : TRANSITION_MS,
+      });
       return;
     }
 
