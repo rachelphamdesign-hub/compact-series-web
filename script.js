@@ -7,11 +7,11 @@ const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
 const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
-const TRANSITION_MS_PHONE = 420; // phone: unlock quickly so swipes don't feel frozen
+const TRANSITION_MS_PHONE = 900; // phone: smoother pacing between sections
 const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 180;
+const PANEL_SWAP_MS_PHONE = 280;
 const SCRUB_RATE = 5;
-const SCRUB_RATE_PHONE = 11;
+const SCRUB_RATE_PHONE = 6; // closer to desktop ease — less snappy scrub
 
 const isWindows = /Windows/i.test(navigator.userAgent);
 const phoneMq = window.matchMedia("(max-width: 640px)");
@@ -22,7 +22,6 @@ const scrubRate = () => (isPhone() ? SCRUB_RATE_PHONE : SCRUB_RATE);
 
 let current = 0;
 let locked = false;
-let pendingStep = 0; // phone only: remember swipe during lockout
 let videoDuration = 10;     // updated from metadata
 let targetTime = 0;
 let displayTime = 0;
@@ -84,16 +83,8 @@ requestAnimationFrame(scrubLoop);
 /* ---------- section transitions ---------- */
 
 function goTo(index, options = {}) {
-  if (index < 0 || index >= panels.length || index === current) return;
-
-  // On phone, queue the swipe instead of dropping it during lockout
-  if (locked) {
-    if (isPhone()) pendingStep = Math.sign(index - current) || pendingStep;
-    return;
-  }
-
+  if (locked || index < 0 || index >= panels.length || index === current) return;
   locked = true;
-  pendingStep = 0;
 
   const from = panels[current];
   const to = panels[index];
@@ -109,14 +100,7 @@ function goTo(index, options = {}) {
   }, panelSwapMs());
 
   current = index;
-  setTimeout(() => {
-    locked = false;
-    if (pendingStep) {
-      const next = current + pendingStep;
-      pendingStep = 0;
-      goTo(next);
-    }
-  }, lockMs);
+  setTimeout(() => { locked = false; }, lockMs);
 }
 
 /* ---------- input: wheel ----------
