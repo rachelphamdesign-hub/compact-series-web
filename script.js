@@ -7,11 +7,11 @@ const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
 const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
-const TRANSITION_MS_PHONE = 620; // phone: slightly slower than snappy 520
+const TRANSITION_MS_PHONE = 950; // phone: slower section pacing
 const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 200;
+const PANEL_SWAP_MS_PHONE = 280;
 const SCRUB_RATE = 5;
-const SCRUB_RATE_PHONE = 7;
+const SCRUB_RATE_PHONE = 4.2;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
 const IOS_SEEK_MIN_MS = 90; // iOS Safari freezes if currentTime is hammered
