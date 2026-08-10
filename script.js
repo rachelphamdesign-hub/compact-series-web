@@ -6,12 +6,12 @@ const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
-const TRANSITION_MS_WIN_MOUSE = 340; // Windows mouse notches — a bit snappier
+const TRANSITION_MS_WIN_MOUSE = 240; // Windows mouse notches — snappier
 const TRANSITION_MS_PHONE = 950; // phone: slower section pacing
 const PANEL_SWAP_MS = 320;
 const PANEL_SWAP_MS_PHONE = 280;
 const SCRUB_RATE = 5;
-const SCRUB_RATE_WIN = 7; // Windows: video keeps up with faster mouse notches
+const SCRUB_RATE_WIN = 9; // Windows: video keeps up with faster mouse notches
 const SCRUB_RATE_PHONE = 4.2;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
