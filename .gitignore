@@ -15,6 +15,8 @@
 # Source footage (not needed for the live site)
 Firefly*.mp4
 *.mov
+assets/final_2-source.mp4
+assets/compact-series.mp4
 
 # Local design / reference dumps (not used by the site)
 shot-*.png
