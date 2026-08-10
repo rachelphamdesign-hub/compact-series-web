@@ -37,7 +37,10 @@ let displayTime = 0;
    (Safari refuses to seek — or even play — without it). */
 
 async function loadVideo() {
-  const src = video.dataset.src;
+  // Phones get a lighter 720p scrub encode; desktop keeps full 1080p.
+  const src = (isPhone() && video.dataset.srcMobile)
+    ? video.dataset.srcMobile
+    : video.dataset.src;
   try {
     const res = await fetch(src);
     if (!res.ok) throw new Error(res.statusText);
