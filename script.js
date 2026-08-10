@@ -6,11 +6,12 @@ const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
-const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
+const TRANSITION_MS_WIN_MOUSE = 340; // Windows mouse notches — a bit snappier
 const TRANSITION_MS_PHONE = 950; // phone: slower section pacing
 const PANEL_SWAP_MS = 320;
 const PANEL_SWAP_MS_PHONE = 280;
 const SCRUB_RATE = 5;
+const SCRUB_RATE_WIN = 7; // Windows: video keeps up with faster mouse notches
 const SCRUB_RATE_PHONE = 4.2;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
@@ -24,7 +25,11 @@ const phoneMq = window.matchMedia("(max-width: 640px)");
 const isPhone = () => phoneMq.matches;
 const defaultLockMs = () => (isPhone() ? TRANSITION_MS_PHONE : TRANSITION_MS);
 const panelSwapMs = () => (isPhone() ? PANEL_SWAP_MS_PHONE : PANEL_SWAP_MS);
-const scrubRate = () => (isPhone() ? SCRUB_RATE_PHONE : SCRUB_RATE);
+const scrubRate = () => {
+  if (isPhone()) return SCRUB_RATE_PHONE;
+  if (isWindows) return SCRUB_RATE_WIN;
+  return SCRUB_RATE;
+};
 const touchThreshold = () => (isPhone() ? TOUCH_THRESHOLD_PHONE : TOUCH_THRESHOLD);
 
 let current = 0;
