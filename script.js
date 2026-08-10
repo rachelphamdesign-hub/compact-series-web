@@ -46,10 +46,8 @@ async function loadVideo() {
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
 
-  // Phones get a lighter scrub encode; desktop keeps full 1080p.
-  const src = (isPhone() && video.dataset.srcMobile)
-    ? video.dataset.srcMobile
-    : video.dataset.src;
+  // Always use 1080p — the lighter mobile encode looked too soft on phones.
+  const src = video.dataset.src;
 
   if (isIOS) {
     video.src = src;
