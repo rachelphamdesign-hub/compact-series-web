@@ -7,11 +7,13 @@ const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
 const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
-const TRANSITION_MS_PHONE = 900; // phone: smoother pacing between sections
+const TRANSITION_MS_PHONE = 560; // phone: responsive without feeling frozen
 const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 280;
+const PANEL_SWAP_MS_PHONE = 200;
 const SCRUB_RATE = 5;
-const SCRUB_RATE_PHONE = 6; // closer to desktop ease — less snappy scrub
+const SCRUB_RATE_PHONE = 9; // catch the section frame quickly on mobile
+const TOUCH_THRESHOLD = 40;
+const TOUCH_THRESHOLD_PHONE = 28;
 
 const isWindows = /Windows/i.test(navigator.userAgent);
 const phoneMq = window.matchMedia("(max-width: 640px)");
@@ -19,9 +21,11 @@ const isPhone = () => phoneMq.matches;
 const defaultLockMs = () => (isPhone() ? TRANSITION_MS_PHONE : TRANSITION_MS);
 const panelSwapMs = () => (isPhone() ? PANEL_SWAP_MS_PHONE : PANEL_SWAP_MS);
 const scrubRate = () => (isPhone() ? SCRUB_RATE_PHONE : SCRUB_RATE);
+const touchThreshold = () => (isPhone() ? TOUCH_THRESHOLD_PHONE : TOUCH_THRESHOLD);
 
 let current = 0;
 let locked = false;
+let pendingStep = 0; // phone: keep one queued swipe so it never feels dead
 let videoDuration = 10;     // updated from metadata
 let targetTime = 0;
 let displayTime = 0;
@@ -73,7 +77,10 @@ function scrubLoop(now) {
   lastTick = now;
   const diff = targetTime - displayTime;
   if (Math.abs(diff) > 0.004 && video.readyState >= 2 && !video.seeking) {
-    displayTime += diff * (1 - Math.exp(-dt * scrubRate()));
+    // On phone, jump partway immediately so scrub doesn't look stuck
+    let step = diff * (1 - Math.exp(-dt * scrubRate()));
+    if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.45;
+    displayTime += step;
     video.currentTime = displayTime;
   }
   requestAnimationFrame(scrubLoop);
@@ -83,8 +90,16 @@ requestAnimationFrame(scrubLoop);
 /* ---------- section transitions ---------- */
 
 function goTo(index, options = {}) {
-  if (locked || index < 0 || index >= panels.length || index === current) return;
+  if (index < 0 || index >= panels.length || index === current) return;
+
+  // Phone: queue one swipe during lock so input never feels frozen
+  if (locked) {
+    if (isPhone()) pendingStep = Math.sign(index - current) || pendingStep;
+    return;
+  }
+
   locked = true;
+  pendingStep = 0;
 
   const from = panels[current];
   const to = panels[index];
@@ -100,7 +115,14 @@ function goTo(index, options = {}) {
   }, panelSwapMs());
 
   current = index;
-  setTimeout(() => { locked = false; }, lockMs);
+  setTimeout(() => {
+    locked = false;
+    if (pendingStep) {
+      const next = current + pendingStep;
+      pendingStep = 0;
+      goTo(next);
+    }
+  }, lockMs);
 }
 
 /* ---------- input: wheel ----------
@@ -166,7 +188,7 @@ window.addEventListener("touchend", (e) => {
   if (touchStartY === null) return;
   const delta = touchStartY - e.changedTouches[0].clientY;
   touchStartY = null;
-  if (Math.abs(delta) < 40) return;
+  if (Math.abs(delta) < touchThreshold()) return;
   goTo(current + (delta > 0 ? 1 : -1));
 });
 
