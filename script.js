@@ -5,16 +5,16 @@
 const video = document.getElementById("bg-video");
 const panels = Array.from(document.querySelectorAll(".panel"));
 
-const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
-const TRANSITION_MS_WIN_MOUSE = 420; // Windows mouse notches — slower, smoother
-const TRANSITION_MS_PHONE = 950; // phone: slower section pacing
-const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 280;
-const SCRUB_RATE = 5;
+const TRANSITION_MS = 1500; // Mac trackpad lockout — slower section pacing
+const TRANSITION_MS_WIN_MOUSE = 420; // Windows mouse notches
+const TRANSITION_MS_PHONE = 1300; // phone: slower section pacing
+const PANEL_SWAP_MS = 400;
+const PANEL_SWAP_MS_PHONE = 360;
+const SCRUB_RATE = 3.2; // Mac: slower video catch-up
 const SCRUB_RATE_WIN = 6; // Windows: ease video catch-up with slower notches
-const SCRUB_RATE_PHONE = 4.2;
+const SCRUB_RATE_PHONE = 3; // phone: slower scrub
 const TOUCH_THRESHOLD = 40;
-const TOUCH_THRESHOLD_PHONE = 28;
+const TOUCH_THRESHOLD_PHONE = 36; // phone: needs a clearer swipe
 const IOS_SEEK_MIN_MS = 90; // iOS Safari freezes if currentTime is hammered
 
 const isWindows = /Windows/i.test(navigator.userAgent);
@@ -178,7 +178,7 @@ function goTo(index, options = {}) {
    Windows mice often use deltaMode=1 (lines) with tiny deltaY values — without
    normalizing, a notch never reaches the threshold and scroll feels broken. */
 
-const WHEEL_THRESHOLD = 40;
+const WHEEL_THRESHOLD = 55; // Mac trackpad: need a fuller swipe per section
 let wheelAccum = 0;
 let wheelResetTimer = null;
 
