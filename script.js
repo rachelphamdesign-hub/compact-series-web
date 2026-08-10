@@ -114,8 +114,8 @@ function scrubLoop(now) {
       step = Math.abs(diff) < 0.25 ? diff : diff * 0.55;
     } else {
       step = diff * (1 - Math.exp(-dt * scrubRate()));
-      // Android: jump partway so scrub doesn't look stuck
-      if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.35;
+      // Small catch-up on phone without a big snap
+      if (isPhone() && Math.abs(diff) > 0.6) step = diff * 0.12;
     }
 
     displayTime += step;
