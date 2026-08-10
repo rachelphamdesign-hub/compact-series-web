@@ -7,11 +7,11 @@ const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
 const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
-const TRANSITION_MS_PHONE = 560; // phone: responsive without feeling frozen
+const TRANSITION_MS_PHONE = 650; // phone: balanced — not snappy, not frozen
 const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 200;
+const PANEL_SWAP_MS_PHONE = 220;
 const SCRUB_RATE = 5;
-const SCRUB_RATE_PHONE = 9; // catch the section frame quickly on mobile
+const SCRUB_RATE_PHONE = 8;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
 
@@ -82,7 +82,7 @@ function scrubLoop(now) {
   if (Math.abs(diff) > 0.004 && video.readyState >= 2 && !video.seeking) {
     // On phone, jump partway immediately so scrub doesn't look stuck
     let step = diff * (1 - Math.exp(-dt * scrubRate()));
-    if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.45;
+    if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.35;
     displayTime += step;
     video.currentTime = displayTime;
   }
