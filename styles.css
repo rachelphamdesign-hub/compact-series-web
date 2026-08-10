@@ -396,9 +396,9 @@ a.btn-glass-dark:active {
 .hero-eyebrow {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(18px, 4.8vw, 28px);
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
+  font-size: clamp(16px, 4.2vw, 24px);
+  letter-spacing: 0.12em;
+  text-transform: none;
   color: rgba(255, 255, 255, 0.88);
   text-shadow:
     0 2px 16px rgba(0, 0, 0, 0.4);
@@ -788,8 +788,8 @@ a.btn-glass-dark:active {
   }
 
   .hero-eyebrow {
-    font-size: clamp(14px, 3.6vw, 18px);
-    letter-spacing: 0.4em;
+    font-size: clamp(13px, 3.4vw, 16px);
+    letter-spacing: 0.08em;
   }
 
   .hero-title {
