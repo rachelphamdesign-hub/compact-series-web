@@ -7,15 +7,19 @@ const panels = Array.from(document.querySelectorAll(".panel"));
 
 const TRANSITION_MS = 1100; // desktop / Mac trackpad lockout
 const TRANSITION_MS_WIN_MOUSE = 480; // Windows mouse notches only
-const TRANSITION_MS_PHONE = 650; // phone: balanced — not snappy, not frozen
+const TRANSITION_MS_PHONE = 520; // phone section lock
 const PANEL_SWAP_MS = 320;
-const PANEL_SWAP_MS_PHONE = 220;
+const PANEL_SWAP_MS_PHONE = 180;
 const SCRUB_RATE = 5;
 const SCRUB_RATE_PHONE = 8;
 const TOUCH_THRESHOLD = 40;
 const TOUCH_THRESHOLD_PHONE = 28;
+const IOS_SEEK_MIN_MS = 90; // iOS Safari freezes if currentTime is hammered
 
 const isWindows = /Windows/i.test(navigator.userAgent);
+const isIOS =
+  /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const phoneMq = window.matchMedia("(max-width: 640px)");
 const isPhone = () => phoneMq.matches;
 const defaultLockMs = () => (isPhone() ? TRANSITION_MS_PHONE : TRANSITION_MS);
@@ -29,18 +33,29 @@ let pendingStep = 0; // phone: keep one queued swipe so it never feels dead
 let videoDuration = 10;     // updated from metadata
 let targetTime = 0;
 let displayTime = 0;
+let lastSeekAt = 0;
 
 /* ---------- video loading ----------
-   The full file is fetched into memory and attached as a blob URL.
-   Seeking then never touches the network, which makes scrubbing
-   instant and works around servers without HTTP range support
-   (Safari refuses to seek — or even play — without it). */
+   Non-iOS: fetch into a blob so scrubbing never hits the network.
+   iOS Safari: blob + frequent seeks freezes the page — use a direct
+   ranged URL instead (Vercel serves Accept-Ranges: bytes). */
 
 async function loadVideo() {
-  // Phones get a lighter 720p scrub encode; desktop keeps full 1080p.
+  video.muted = true;
+  video.playsInline = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+
+  // Phones get a lighter scrub encode; desktop keeps full 1080p.
   const src = (isPhone() && video.dataset.srcMobile)
     ? video.dataset.srcMobile
     : video.dataset.src;
+
+  if (isIOS) {
+    video.src = src;
+    return;
+  }
+
   try {
     const res = await fetch(src);
     if (!res.ok) throw new Error(res.statusText);
@@ -55,12 +70,21 @@ loadVideo();
 video.addEventListener("loadedmetadata", () => {
   videoDuration = video.duration;
   video.pause();
-  video.currentTime = 0.001;
+  try {
+    video.currentTime = 0.001;
+  } catch {
+    /* iOS can throw if seek is not ready yet */
+  }
   syncHotspotLayerToVideo();
 });
 
 video.addEventListener("canplay", () => {
   video.classList.add("is-ready");
+});
+
+video.addEventListener("seeked", () => {
+  // Keep displayTime honest after Safari finishes a seek
+  if (Number.isFinite(video.currentTime)) displayTime = video.currentTime;
 });
 
 /* ---------- video scrub loop ---------- */
@@ -79,12 +103,30 @@ function scrubLoop(now) {
   const dt = Math.min((now - lastTick) / 1000, 0.1);
   lastTick = now;
   const diff = targetTime - displayTime;
+
   if (Math.abs(diff) > 0.004 && video.readyState >= 2 && !video.seeking) {
-    // On phone, jump partway immediately so scrub doesn't look stuck
-    let step = diff * (1 - Math.exp(-dt * scrubRate()));
-    if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.35;
+    let step;
+
+    if (isIOS) {
+      // Few, spaced seeks — never per-frame. Stops the iPhone UI freeze.
+      if (now - lastSeekAt < IOS_SEEK_MIN_MS) {
+        requestAnimationFrame(scrubLoop);
+        return;
+      }
+      step = Math.abs(diff) < 0.25 ? diff : diff * 0.55;
+    } else {
+      step = diff * (1 - Math.exp(-dt * scrubRate()));
+      // Android: jump partway so scrub doesn't look stuck
+      if (isPhone() && Math.abs(diff) > 0.35) step = diff * 0.35;
+    }
+
     displayTime += step;
-    video.currentTime = displayTime;
+    lastSeekAt = now;
+    try {
+      video.currentTime = displayTime;
+    } catch {
+      /* ignore illegal seek during load */
+    }
   }
   requestAnimationFrame(scrubLoop);
 }
@@ -185,6 +227,10 @@ window.addEventListener(
 let touchStartY = null;
 window.addEventListener("touchstart", (e) => {
   touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener("touchcancel", () => {
+  touchStartY = null;
 }, { passive: true });
 
 window.addEventListener("touchend", (e) => {
