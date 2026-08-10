@@ -398,7 +398,7 @@ a.btn-glass-dark:active {
   font-weight: 400;
   font-size: clamp(16px, 4.2vw, 24px);
   letter-spacing: 0.12em;
-  text-transform: none;
+  text-transform: uppercase;
   color: rgba(255, 255, 255, 0.88);
   text-shadow:
     0 2px 16px rgba(0, 0, 0, 0.4);
